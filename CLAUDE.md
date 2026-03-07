@@ -216,3 +216,9 @@ Core principles: readability over cleverness, consistency with existing patterns
 # Testing
 
 Write tests wherever possible. Each plan step in `plan.md` specifies what tests must exist and what they assert. Tests are part of the output contract — a step is not [DONE] until its tests pass.
+
+---
+
+# Interaction
+
+When user input is required (Q&A, feature selection, plan review, approvals), always use the `AskUserQuestion` tool. Do not ask questions via plain text output.

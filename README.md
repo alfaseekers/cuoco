@@ -14,16 +14,7 @@ Cuoco prevents this by enforcing a **research → plan → implement** pipeline 
   │ (once)  │      │ research │      │implement │
   └─────────┘      │ + plan   │      │ the plan │
                    └──────────┘      └──────────┘
-                        │                  │
-                        ▼                  ▼
-                   artifacts/         feat/<id>
-                   feat/<id>/         branch +
-                   research.md        code commits
-                   plan.md
 ```
-Where:
-- Setup -> project level
-- Recipe research & Cook implement -> feature level (multiple per project)
 
 ## Installation
 
