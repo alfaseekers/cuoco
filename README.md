@@ -1,6 +1,6 @@
 # Cuoco 🍝 — Context Driven Development for Claude Code
 
-Cuoco ("cook" in Italian) is a structured workflow for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) for organizing and structuring agent-based software development. It organises the software development lifecycle into three phases — **Setup**, **Recipe**, and **Cook** — and tracks all decisions in persistent artifacts on an isolated Git branch.
+Cuoco ("cook" in Italian) is a structured workflow for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) for organizing and structuring agent-based software development. It organises the software development lifecycle into three phases — **Setup**, **Recipe**, and **Cook** — and tracks all decisions in persistent artifacts in a `.artifacts/` directory.
 
 ## Why Cuoco?
 
@@ -70,14 +70,13 @@ Once installed, in Claude Code:
 
 Run once per project. Cuoco will:
 
-1. Create an isolated `cuoco/artifacts` orphan branch and mount it at `artifacts/` via Git worktree
-2. Add `artifacts/` to `.gitignore` so it's invisible to code branches
-3. Walk you through an interactive Q&A to understand your project
-4. Generate:
-   - **`artifacts/product.md`** — project vision and requirements
-   - **`artifacts/tech-stack.md`** — technology choices and conventions
-   - **`artifacts/feat/index.json`** — feature roadmap with dependency graph
-   - **`artifacts/code-style/`** — fixed code style guides
+1. Create the `.artifacts/` directory
+2. Walk you through an interactive Q&A to understand your project
+3. Generate:
+   - **`.artifacts/product.md`** — project vision and requirements
+   - **`.artifacts/tech-stack.md`** — technology choices and conventions
+   - **`.artifacts/feat/index.json`** — feature roadmap with dependency graph
+   - **`.artifacts/code-style/`** — fixed code style guides
 5. Optionally ingest existing product/brand guidelines
 
 ### `/cuoco:f-recipe` — Feature Recipe (Research + Planning)
@@ -90,7 +89,7 @@ Prepares everything needed to implement a feature **without touching any source 
 4. **Planning phase**: creates a step-by-step `plan.md` with output contracts and suggested commits
 5. You review and approve the plan (or request changes)
 
-> **Key constraint**: During recipe, only files in `artifacts/` are created or modified. No source code is touched. This ensures you review the approach before implementation begins.
+> **Key constraint**: During recipe, only files in `.artifacts/` are created or modified. No source code is touched. This ensures you review the approach before implementation begins.
 
 ### `/cuoco:f-cook` — Cook (Implementation)
 
@@ -111,7 +110,7 @@ Executes an approved plan:
 ## Artifact Structure
 
 ```
-artifacts/                            ← git worktree → cuoco/artifacts branch
+.artifacts/                           ← hidden directory, tracked normally
 ├── product.md                        # Project vision, users, features
 ├── tech-stack.md                     # Language, framework, packages
 ├── product-guidelines.md             # Brand guidelines (optional)
@@ -168,47 +167,9 @@ A feature can enter `/cuoco:f-recipe` when it is `pending` and all its `depends_
 
 ## Git Architecture
 
-### Isolated Artifact Branch
+Artifacts live in `.artifacts/`, a hidden directory tracked normally on every branch. No orphan branches, no worktrees — just a dot-prefixed directory that stays out of your way.
 
-Cuoco uses a Git orphan branch (`cuoco/artifacts`) to store all workflow artifacts. This branch has no common ancestor with your code branches — it's a completely separate history. It is mounted at `artifacts/` using `git worktree add` and listed in `.gitignore` on all code branches.
-
-```
-main branch:             A ──── B ──── C ──── D
-                         ↕      ↕      ↕      ↕      1:1 mapping
-cuoco/artifacts branch:  A' ─── B' ─── C' ─── D'
-```
-
-### Why?
-
-- **Clean code history**: `git log` on any code branch shows only code changes
-- **Artifact audit trail**: `git log` on `cuoco/artifacts` shows the full decision history
-- **No merge conflicts**: artifacts and code never share files, so they never conflict
-- **Worktree convenience**: artifacts are always accessible at `artifacts/` in your working directory
-
-### 1:1 Commit Mapping
-
-Every code commit has a corresponding artifact commit. When `/cuoco:f-cook` completes a plan step:
-
-1. Code changes are committed to `feat/<id>`
-2. Plan.md status is updated and committed to `cuoco/artifacts`
-
-This explicit synchronisation (no hooks) ensures traceability.
-
-### Setting Up the Worktree (done by `/cuoco:setup`)
-
-```bash
-# Create orphan branch
-git checkout --orphan cuoco/artifacts
-git rm -rf .
-git commit --allow-empty -m "chore(cuoco): init artifact branch"
-git checkout main
-
-# Mount as worktree
-git worktree add artifacts cuoco/artifacts
-
-# Hide from code branches
-echo "artifacts/" >> .gitignore
-```
+Feature branches (`feat/<id>`) contain both code and artifact changes. This keeps things simple: one branch, one history, one `git log`.
 
 ## Development Conventions
 
