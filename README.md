@@ -196,6 +196,16 @@ Cuoco is implemented as [Claude Code custom slash commands](https://docs.anthrop
 
 The commands reference `CLAUDE.md` at the repo root for their operational rules and use the standard Claude Code toolset (file read/write, bash, glob, grep) — no external dependencies beyond Git.
 
+## How Cuoco Uses Agentic AI
+
+Cuoco treats Claude Code as an autonomous agent that can read files, run shell commands, and write code — but deliberately constrains _when_ it may do what. During **Setup**, the agent conducts an interactive interview, synthesises your answers, and generates the foundational artifacts (product vision, tech-stack decisions, feature roadmap). During **Recipe**, the agent is free to explore — it deep-reads source files, greps for patterns, investigates external APIs and libraries — but is strictly forbidden from modifying any source code; its only outputs are research and planning documents. This separation means the agent can do extensive autonomous exploration without the risk of premature or unchecked code changes. Only in the **Cook** phase does the agent gain write-access to the codebase, and even then it is bound to the approved plan: each step has defined inputs, outputs, and tests, so the agent executes deterministically rather than improvising. The result is an agentic loop where the AI has broad autonomy to _think_ but tightly scoped permission to _act_.
+
+## Limitations
+
+**No built-in revert command.** Cuoco does not yet ship a dedicated undo or rollback command. If a cook step produces an undesirable result, you need to revert manually using standard Git operations (e.g., `git revert` or `git reset`). Because the entire workflow is built on Git — with atomic conventional commits per plan step and a 1:1 mapping between code and artifact commits — adding an automated revert command is straightforward and is planned for a future release.
+
+**No graphical user interface.** All interaction with Cuoco happens through the terminal via Claude Code slash commands. There is no web dashboard, visual dependency graph, or point-and-click feature picker. While this keeps the tool lightweight and dependency-free, it means you need to be comfortable working in a terminal environment. The structured artifacts (JSON roadmap, Markdown plans) are designed to be human-readable in any text editor, which partially offsets the lack of a GUI.
+
 ---
 
 *Cuoco — read deeply, plan carefully, cook confidently.*
