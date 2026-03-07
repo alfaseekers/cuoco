@@ -25,9 +25,47 @@ Where:
 - Setup -> project level
 - Recipe research & Cook implement -> feature level (multiple per project)
 
+## Installation
+
+**Prerequisites:** [Git](https://git-scm.com/) and [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
+
+### Install script
+
+Clone cuoco and run the install script pointing at your project:
+
+```bash
+git clone https://github.com/anzamuel/cuoco.git /tmp/cuoco
+/tmp/cuoco/install.sh /path/to/your-project
+rm -rf /tmp/cuoco
+```
+
+Or as a one-liner:
+
+```bash
+git clone https://github.com/anzamuel/cuoco.git /tmp/cuoco && /tmp/cuoco/install.sh . && rm -rf /tmp/cuoco
+```
+
+Use `--force` to overwrite an existing `AGENTS.md`:
+
+```bash
+/tmp/cuoco/install.sh --force /path/to/your-project
+```
+
+### Manual installation
+
+Copy these files into your project:
+
+```
+AGENTS.md                             → project root
+.claude/commands/cuoco/setup.md       → .claude/commands/cuoco/
+.claude/commands/cuoco/f-recipe.md    → .claude/commands/cuoco/
+.claude/commands/cuoco/f-cook.md      → .claude/commands/cuoco/
+code-style/*.md                       → code-style/
+```
+
 ## Quick Start
 
-In a Git repository with Claude Code installed:
+Once installed, in Claude Code:
 
 ```
 /cuoco:setup          # One-time: generate product.md, tech-stack.md, feature roadmap

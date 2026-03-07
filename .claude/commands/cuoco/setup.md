@@ -52,16 +52,7 @@ Ask the user if product/brand guidelines exist. If yes, ingest them into `artifa
 
 ## 5. Code Style Guides
 
-Copy fixed code style guides into `artifacts/code-style/`. At minimum include `general.md`. If the project language is known, include the relevant language guide too.
-
-Use these as the general guide content:
-- Readability over cleverness
-- Consistency with existing patterns
-- Simplicity over abstraction
-- Document why, not what
-- Minimise coupling and dependencies
-
-For language-specific guides, tailor to the language(s) from tech-stack.md.
+Copy the bundled code style guides from `code-style/` into `artifacts/code-style/`. At minimum copy `general.md`. If the project uses a specific language (from tech-stack.md), also copy the relevant language guide (e.g., `typescript.md`, `python.md`). Only copy guides for languages the project actually uses.
 
 ## 6. Feature Roadmap (artifacts/feat/index.json)
 
