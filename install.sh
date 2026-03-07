@@ -30,12 +30,12 @@ fi
 echo "Installing cuoco into $TARGET_DIR"
 echo ""
 
-# 1. AGENTS.md
-if [ -f "$TARGET_DIR/AGENTS.md" ] && [ "$FORCE" = false ]; then
-  echo "  SKIP  AGENTS.md (already exists — use --force to overwrite)"
+# 1. CLAUDE.md
+if [ -f "$TARGET_DIR/CLAUDE.md" ] && [ "$FORCE" = false ]; then
+  echo "  SKIP  CLAUDE.md (already exists — use --force to overwrite)"
 else
-  cp "$CUOCO_DIR/AGENTS.md" "$TARGET_DIR/AGENTS.md"
-  echo "  COPY  AGENTS.md"
+  cp "$CUOCO_DIR/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
+  echo "  COPY  CLAUDE.md"
 fi
 
 # 2. Slash commands

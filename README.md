@@ -45,7 +45,7 @@ Or as a one-liner:
 git clone https://github.com/anzamuel/cuoco.git /tmp/cuoco && /tmp/cuoco/install.sh . && rm -rf /tmp/cuoco
 ```
 
-Use `--force` to overwrite an existing `AGENTS.md`:
+Use `--force` to overwrite an existing `CLAUDE.md`:
 
 ```bash
 /tmp/cuoco/install.sh --force /path/to/your-project
@@ -56,7 +56,7 @@ Use `--force` to overwrite an existing `AGENTS.md`:
 Copy these files into your project:
 
 ```
-AGENTS.md                             → project root
+CLAUDE.md                             → project root
 .claude/commands/cuoco/setup.md       → .claude/commands/cuoco/
 .claude/commands/cuoco/f-recipe.md    → .claude/commands/cuoco/
 .claude/commands/cuoco/f-cook.md      → .claude/commands/cuoco/
@@ -242,7 +242,7 @@ Cuoco is implemented as [Claude Code custom slash commands](https://docs.anthrop
 └── f-cook.md       →  /cuoco:f-cook
 ```
 
-The commands reference `AGENTS.md` at the repo root for their operational rules and use the standard Claude Code toolset (file read/write, bash, glob, grep) — no external dependencies beyond Git.
+The commands reference `CLAUDE.md` at the repo root for their operational rules and use the standard Claude Code toolset (file read/write, bash, glob, grep) — no external dependencies beyond Git.
 
 ---
 

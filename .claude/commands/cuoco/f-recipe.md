@@ -3,7 +3,7 @@ description: Research and plan a feature — produces research.md and plan.md wi
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, Agent, WebFetch
 ---
 
-You are running /cuoco:f-recipe. Read AGENTS.md for full operational rules.
+You are running /cuoco:f-recipe. Read CLAUDE.md for full operational rules.
 
 CRITICAL CONSTRAINT: During this entire phase, do NOT create, modify, or delete any source code files. Only files under artifacts/ may be touched. If you want to write code, write it into the plan as a code snippet instead.
 

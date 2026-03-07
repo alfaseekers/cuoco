@@ -3,7 +3,7 @@ description: Implement a planned feature by executing its plan.md step by step.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, Agent
 ---
 
-You are running /cuoco:f-cook. Read AGENTS.md for full operational rules.
+You are running /cuoco:f-cook. Read CLAUDE.md for full operational rules.
 
 CRITICAL CONSTRAINT: Follow the plan. If the plan is wrong or incomplete, STOP and tell the user. Do not improvise or go beyond what the plan specifies.
 

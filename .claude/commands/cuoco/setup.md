@@ -3,7 +3,7 @@ description: One-time project initialisation — generates product.md, tech-stac
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 
-You are running /cuoco:setup. Read AGENTS.md for full operational rules.
+You are running /cuoco:setup. Read CLAUDE.md for full operational rules.
 
 Follow these steps exactly:
 
