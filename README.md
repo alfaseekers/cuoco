@@ -1,14 +1,10 @@
-# Cuoco — Context Driven Development for Claude Code
+# Cuoco 🍝 — Context Driven Development for Claude Code
 
-Cuoco ("cook" in Italian) is a structured workflow for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) that ensures **no code is written before a reviewed plan exists**. It organises the software development lifecycle into three phases — **Setup**, **Recipe**, and **Cook** — and tracks all decisions in persistent artifacts on an isolated Git branch.
+Cuoco ("cook" in Italian) is a structured workflow for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) for organizing and structuring agent-based software development. It organises the software development lifecycle into three phases — **Setup**, **Recipe**, and **Cook** — and tracks all decisions in persistent artifacts on an isolated Git branch.
 
 ## Why Cuoco?
 
-AI coding tools produce the best results when they have deep context and a clear plan. Without structure, common failure modes include:
-
-- Implementations that work in isolation but break surrounding systems
-- Duplicated logic that already exists elsewhere
-- Wrong assumptions baked in early that cascade through the codebase
+AI coding tools produce the best results when they have deep context and a clear plan. Without structure, common failure modes (e.g., wrong assumptions baked in early that cascade through the codebase) often occur.
 
 Cuoco prevents this by enforcing a **research → plan → implement** pipeline where every decision is documented and reviewed before any code is written.
 
@@ -25,6 +21,9 @@ Cuoco prevents this by enforcing a **research → plan → implement** pipeline 
                    research.md        code commits
                    plan.md
 ```
+Where:
+- Setup -> project level
+- Recipe research & Cook implement -> feature level (multiple per project)
 
 ## Quick Start
 
@@ -58,7 +57,7 @@ Prepares everything needed to implement a feature **without touching any source 
 
 1. Shows available features (pending status, all dependencies satisfied)
 2. You pick one — Cuoco creates the feature branch `feat/<id>`
-3. **Research phase**: deep-reads the codebase, investigates APIs and libraries, writes `research.md`
+3. **Research phase**: deep-reads the codebase, investigates APIs and libraries (according to the state at the current date), writes `research.md`
 4. **Planning phase**: creates a step-by-step `plan.md` with output contracts and suggested commits
 5. You review and approve the plan (or request changes)
 
