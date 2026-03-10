@@ -1,35 +1,63 @@
 ---
-description: Research and plan a feature — produces research.md and plan.md without touching source code.
+description: Research and plan a feature — produces research.md, plan.md, and references.md without touching source code.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, Agent, WebFetch
 ---
 
 You are running /cuoco:f-recipe. Read CLAUDE.md for full operational rules.
 
-CRITICAL CONSTRAINT: During this entire phase, do NOT create, modify, or delete any source code files. Only files under .artifacts/ may be touched. If you want to write code, write it into the plan as a code snippet instead.
+CRITICAL CONSTRAINT: During this entire phase, do NOT create, modify, or delete any source code files. Only files under .cuoco/artifacts/ may be touched. If you want to write code, write it into the plan as a code snippet instead.
 
-## 1. Select a Feature
+## 0. Sync
 
-Read `.artifacts/feat/index.json`. Identify features where:
-- status is "pending"
-- ALL features listed in depends_on have status "done"
+```bash
+git -C .cuoco/artifacts pull
+PROJECT_NAME=$(git remote get-url origin | sed 's|.*/||; s|\.git$||')
+ARTIFACTS=".cuoco/artifacts/$PROJECT_NAME"
+```
 
-Present the available features to the user with AskUserQuestion. Let them choose one.
+## 1. Define the Feature
+
+Ask the user with AskUserQuestion: "What feature do you want to work on? Give it a name and a one-sentence description."
+
+Derive a kebab-case `feature-id` from the name (e.g. "Data Ingestion Layer" → `data-ingestion-layer`).
+
+If `$ARTIFACTS/feat/index.json` already contains features, ask the user with AskUserQuestion whether this feature depends on any of them. If yes, note the dependency ids.
+
+Add a new entry to `$ARTIFACTS/feat/index.json`:
+
+```json
+{
+  "id": "<feature-id>",
+  "name": "<Feature Name>",
+  "description": "<one-sentence description>",
+  "status": "in-recipe",
+  "depends_on": []
+}
+```
 
 ## 2. Create Feature Branch
 
-```
+```bash
 git checkout -b feat/<feature-id> main
 ```
 
-Update the chosen feature's status to "in-recipe" in `.artifacts/feat/index.json`.
+Create the directory `$ARTIFACTS/feat/<feature-id>/`.
 
-Create the directory `.artifacts/feat/<feature-id>/`.
+## 3. References
 
-## 3. Research Phase
+Read `.cuoco/references/`. List all subdirectories present.
 
-Read the codebase deeply and thoroughly. Investigate relevant APIs, libraries, tools, and architectural patterns. Study how the feature fits into the existing system. Consult .artifacts/product.md and .artifacts/tech-stack.md for context.
+Write `$ARTIFACTS/feat/<feature-id>/references.md`:
+- If repos are present: list each repo name and its local path (`.cuoco/references/<name>/`), one per line.
+- If empty or absent: note that no local references are available.
 
-Write findings to `.artifacts/feat/<feature-id>/research.md`.
+Do not add any repos yourself. Only reflect what is present.
+
+## 4. Research Phase
+
+Read the codebase deeply and thoroughly. Investigate relevant APIs, libraries, tools, and architectural patterns. Study how the feature fits into the existing system. Consult `$ARTIFACTS/product.md` and `$ARTIFACTS/tech-stack.md` for context. Read from `.cuoco/references/<repo>/` where relevant to the feature.
+
+Write findings to `$ARTIFACTS/feat/<feature-id>/research.md`.
 
 The research document must follow this form:
 - Opens with a paragraph naming the feature and summarising what was investigated
@@ -39,9 +67,9 @@ The research document must follow this form:
 - Detailed enough that an implementer can write code without consulting external docs
 - Closes with a ## References table (columns: Reference, URL)
 
-## 4. Planning Phase
+## 5. Planning Phase
 
-Using research.md plus project artifacts, create `.artifacts/feat/<feature-id>/plan.md`.
+Using research.md plus project artifacts, create `$ARTIFACTS/feat/<feature-id>/plan.md`.
 
 The plan must follow this form:
 - Opens with a preamble paragraph: what the feature does and step dependency order
@@ -51,21 +79,32 @@ The plan must follow this form:
 
   What gets built — modules, classes, functions at implementation-ready detail.
   Dependencies — prior step numbers, or "None".
-  Tests — what tests exist at the end of this step and what they assert.
-  Output contract — definition of done as observable behaviour.
-  Suggested commits — bullet list of conventional commit messages.
 
-## 5. User Review
+  ### RED [PENDING]
+
+  Tests to write. Specific test file, test names, and what each assertion verifies.
+  These tests must fail before any implementation is written.
+  Suggested commits (red phase).
+
+  ### GREEN [PENDING]
+
+  Minimum implementation to make the RED tests pass. Nothing beyond what the tests require.
+  Suggested commits (green phase).
+
+  Output contract — definition of done as observable behaviour (tests pass, commands succeed).
+
+## 6. User Review
 
 Present the plan to the user. If they reject or request changes, revise and re-present until approved.
 
-## 6. Finalise
+## 7. Finalise
 
-Set the feature status to "planned" in `.artifacts/feat/index.json`.
+Set the feature status to `"planned"` in `$ARTIFACTS/feat/index.json`.
 
-Commit all artifacts:
-```
-git add .artifacts && git commit -m "docs(cuoco): add recipe for <feature-id>"
+```bash
+git -C .cuoco/artifacts add $PROJECT_NAME
+git -C .cuoco/artifacts commit -m "docs(cuoco): add recipe for <feature-id>"
+git -C .cuoco/artifacts push
 ```
 
 Announce that the recipe is complete and the user can run `/cuoco:f-cook` to start implementation.

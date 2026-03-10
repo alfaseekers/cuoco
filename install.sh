@@ -27,7 +27,7 @@ if [ ! -d "$TARGET_DIR/.git" ]; then
   exit 1
 fi
 
-echo "Installing cuoco into $TARGET_DIR"
+echo "Installing AlfaSeekers cuoco into $TARGET_DIR"
 echo ""
 
 # 1. CLAUDE.md
@@ -52,6 +52,10 @@ for guide in "$CUOCO_DIR/code-style/"*.md; do
   cp "$guide" "$TARGET_DIR/code-style/$name"
   echo "  COPY  code-style/$name"
 done
+
+# 4. Tech stack template
+cp "$CUOCO_DIR/tech-stack.md" "$TARGET_DIR/tech-stack.md"
+echo "  COPY  tech-stack.md"
 
 echo ""
 echo "Done! Run /cuoco:setup in Claude Code to initialise your project."

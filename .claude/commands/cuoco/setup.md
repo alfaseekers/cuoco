@@ -1,5 +1,5 @@
 ---
-description: One-time project initialisation — generates product.md, tech-stack.md, feature roadmap, and sets up the .artifacts/ directory.
+description: One-time project initialisation — generates product.md, tech-stack.md, and sets up the .cuoco/ directory linked to alfaseekers/artifacts.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 
@@ -7,68 +7,72 @@ You are running /cuoco:setup. Read CLAUDE.md for full operational rules.
 
 Follow these steps exactly:
 
-## 1. Create .artifacts/ Directory
+## 0. Bootstrap
 
-Create the `.artifacts/` directory and its subdirectories if they don't already exist:
+Run the following before anything else:
 
+```bash
+# Add .cuoco/ to .gitignore (idempotent)
+grep -qxF '.cuoco/' .gitignore 2>/dev/null || echo '.cuoco/' >> .gitignore
+
+# Derive project name from git remote
+PROJECT_NAME=$(git remote get-url origin | sed 's|.*/||; s|\.git$||')
+
+# Clone or update alfaseekers/artifacts
+if [ -d .cuoco/artifacts/.git ]; then
+  git -C .cuoco/artifacts pull
+else
+  mkdir -p .cuoco
+  git clone git@github.com:alfaseekers/artifacts.git .cuoco/artifacts
+fi
+
+# Create project namespace
+mkdir -p .cuoco/artifacts/$PROJECT_NAME/feat .cuoco/artifacts/$PROJECT_NAME/code-style
 ```
-mkdir -p .artifacts/feat .artifacts/code-style
-```
 
-## 2. Product Vision (.artifacts/product.md)
+All subsequent artifact writes use the path `.cuoco/artifacts/$PROJECT_NAME/`.
+
+## 1. Product Vision (.cuoco/artifacts/$PROJECT_NAME/product.md)
 
 Ask the user 3–4 batched questions using AskUserQuestion:
 - What does the project do and who is it for?
 - What are the core features / capabilities?
 - What does success look like? Any key constraints?
 
-Generate `.artifacts/product.md` from the answers. Show it to the user; revise if needed.
+Generate `.cuoco/artifacts/$PROJECT_NAME/product.md` from the answers. Show it to the user; revise if needed.
 
-## 3. Tech Stack (.artifacts/tech-stack.md)
+## 2. Tech Stack
 
-Ask the user with AskUserQuestion whether to infer the tech stack from the existing codebase or specify it manually.
+Copy the bundled `tech-stack.md` from the cuoco repo root into `.cuoco/artifacts/$PROJECT_NAME/tech-stack.md`. Do not ask the user — the AlfaSeekers stack is fixed.
 
-If inferring: scan the codebase for package.json, requirements.txt, go.mod, Cargo.toml, pyproject.toml, file extensions, etc. Build a draft tech-stack.md and present it for review.
-
-If manual, ask the user using AskUserQuestion:
-- Language(s) and framework(s)
-- Package manager
-- Testing framework
-- Database (if any)
-- Key libraries
-
-Generate `.artifacts/tech-stack.md`. Include git conventions (conventional commits, branch-driven dev).
-
-## 4. Product Guidelines (optional)
+## 3. Product Guidelines (optional)
 
 Ask the user with AskUserQuestion: use the standard product guidelines, provide your own, or skip.
 
-If standard: copy bundled guidelines into `.artifacts/product-guidelines.md`.
-If custom: ask the user to provide the content or point to a file; ingest and save as `.artifacts/product-guidelines.md`.
+If standard: copy bundled guidelines into `.cuoco/artifacts/$PROJECT_NAME/product-guidelines.md`.
+If custom: ask the user to provide the content or point to a file; ingest and save.
 If skip: move on.
 
-## 5. Code Style Guides
+## 4. Code Style Guides
 
-Copy the bundled code style guides from `code-style/` into `.artifacts/code-style/`. At minimum copy `general.md`. If the project uses a specific language (from tech-stack.md), also copy the relevant language guide (e.g., `typescript.md`, `python.md`). Only copy guides for languages the project actually uses.
+Copy `general.md` and `python.md` from the bundled `code-style/` directory into `.cuoco/artifacts/$PROJECT_NAME/code-style/`. Do not ask the user — these are always copied.
 
-## 6. Feature Roadmap (.artifacts/feat/index.json)
+## 5. Feature Registry
 
-Extract a preliminary feature list from product.md. For each feature, determine:
-- A kebab-case id (used as branch name: feat/<id>)
-- A human-readable name
-- A one-sentence description
-- Dependencies (which features must complete first)
+Create an empty feature registry at `.cuoco/artifacts/$PROJECT_NAME/feat/index.json`:
 
-Write `.artifacts/feat/index.json` with all features at status "pending".
-
-Present the feature list to the user. Adjust based on feedback.
-
-## 7. Commit
-
-Commit all generated artifacts:
-
-```
-git add .artifacts && git commit -m "chore(cuoco): initial project setup"
+```json
+{"features": []}
 ```
 
-Announce that setup is complete and the user can run `/cuoco:f-recipe` to start their first feature.
+Features are defined later, one at a time, when the user runs `/cuoco:f-recipe`.
+
+## 6. Push
+
+```bash
+git -C .cuoco/artifacts add $PROJECT_NAME
+git -C .cuoco/artifacts commit -m "chore(cuoco): initial setup for $PROJECT_NAME"
+git -C .cuoco/artifacts push
+```
+
+Announce that setup is complete and the user can run `/cuoco:f-recipe` to define and plan their first feature.
