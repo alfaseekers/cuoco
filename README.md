@@ -12,18 +12,10 @@ Context-driven development workflow for Claude Code at AlfaSeekers. Three phases
 
 ## Installation
 
-Clone and install into your project:
-
 ```bash
 git clone git@github.com:alfaseekers/cuoco.git /tmp/cuoco
 /tmp/cuoco/install.sh /path/to/your-project
 rm -rf /tmp/cuoco
-```
-
-Or as a one-liner:
-
-```bash
-git clone git@github.com:alfaseekers/cuoco.git /tmp/cuoco && /tmp/cuoco/install.sh . && rm -rf /tmp/cuoco
 ```
 
 Use `--force` to overwrite an existing `CLAUDE.md`:
@@ -40,40 +32,37 @@ Use `--force` to overwrite an existing `CLAUDE.md`:
 /cuoco:f-cook     # Implement the approved plan with red/green TDD
 ```
 
-## Artifacts
+## Artifact Structure
 
-All artifacts sync to `alfaseekers/artifacts` — the org-wide knowledge base. Each project gets a namespace derived from its git remote URL.
+All artifacts sync to `alfaseekers/artifacts`. Org-wide files live at the repo root; project-specific files are namespaced by project name.
 
 ```
-.cuoco/                         ← gitignored in project repos
+.cuoco/
 ├── artifacts/                  ← clone of alfaseekers/artifacts
+│   ├── tech-stack.md          ← org-wide; seeded once
+│   ├── code-style/            ← org-wide; seeded once
+│   │   ├── general.md
+│   │   └── python.md
 │   └── <project-name>/
 │       ├── product.md
-│       ├── tech-stack.md
-│       ├── code-style/
 │       └── feat/
-│           ├── index.json      ← feature registry (grows with each f-recipe)
+│           ├── index.json     ← grows with each f-recipe run
 │           └── <feature-id>/
 │               ├── research.md
-│               ├── plan.md
-│               └── references.md
-└── references/                 ← local repo clones for agent inspection
-    └── <repo-name>/            ← added only on explicit request
+│               └── plan.md
+└── references/                 ← canvas; clone repos here while working
+    └── <repo-name>/
 ```
 
 ## References
 
-To make a codebase available to the agent during research or implementation:
+Clone any repo to `.cuoco/references/<name>` and the agent will read from it during recipe and cook:
 
 ```bash
 git clone <url> .cuoco/references/<name>
 ```
 
-The agent will detect it automatically on the next `/cuoco:f-recipe` run and list it in `references.md`.
-
 ## Plan Format (RED/GREEN TDD)
-
-Every plan step has two mandatory substeps:
 
 ```
 ## Step N — Title [PENDING]

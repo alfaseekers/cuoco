@@ -1,37 +1,98 @@
-# Google Python Style Guide Summary
+# Python Code Style
 
-This document summarizes key rules and best practices from the Google Python Style Guide.
+This guide reflects the constraints enforced by the AlfaSeekers toolchain (ruff + ty). All rules below are automatically checked on every commit — violations block the commit.
 
-## 1. Python Language Rules
-- **Linting:** Run `pylint` on your code to catch bugs and style issues.
-- **Imports:** Use `import x` for packages/modules. Use `from x import y` only when `y` is a submodule.
-- **Exceptions:** Use built-in exception classes. Do not use bare `except:` clauses.
-- **Global State:** Avoid mutable global state. Module-level constants are okay and should be `ALL_CAPS_WITH_UNDERSCORES`.
-- **Comprehensions:** Use for simple cases. Avoid for complex logic where a full loop is more readable.
-- **Default Argument Values:** Do not use mutable objects (like `[]` or `{}`) as default values.
-- **True/False Evaluations:** Use implicit false (e.g., `if not my_list:`). Use `if foo is None:` to check for `None`.
-- **Type Annotations:** Strongly encouraged for all public APIs.
+## Annotations
 
-## 2. Python Style Rules
-- **Line Length:** Maximum 80 characters.
-- **Indentation:** 4 spaces per indentation level. Never use tabs.
-- **Blank Lines:** Two blank lines between top-level definitions (classes, functions). One blank line between method definitions.
-- **Whitespace:** Avoid extraneous whitespace. Surround binary operators with single spaces.
-- **Docstrings:** Use `"""triple double quotes"""`. Every public module, function, class, and method must have a docstring.
-  - **Format:** Start with a one-line summary. Include `Args:`, `Returns:`, and `Raises:` sections.
-- **Strings:** Use f-strings for formatting. Be consistent with single (`'`) or double (`"`) quotes.
-- **`TODO` Comments:** Use `TODO(username): Fix this.` format.
-- **Imports Formatting:** Imports should be on separate lines and grouped: standard library, third-party, and your own application's imports.
+Every function and method must have full type annotations: all parameters and the return type. Use `-> None` explicitly when a function returns nothing. Type-only imports (used only in annotations) must be placed inside an `if TYPE_CHECKING:` block.
 
-## 3. Naming
-- **General:** `snake_case` for modules, functions, methods, and variables.
-- **Classes:** `PascalCase`.
-- **Constants:** `ALL_CAPS_WITH_UNDERSCORES`.
-- **Internal Use:** Use a single leading underscore (`_internal_variable`) for internal module/class members.
+```python
+from __future__ import annotations
 
-## 4. Main
-- All executable files should have a `main()` function that contains the main logic, called from a `if __name__ == '__main__':` block.
+from typing import TYPE_CHECKING
 
-**BE CONSISTENT.** When editing code, match the existing style.
+if TYPE_CHECKING:
+    from mymodule import MyType
 
-*Source: [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)*
+
+def process(data: list[int]) -> dict[str, int]:
+    ...
+```
+
+## Quotes
+
+Use single quotes for all strings. Use double quotes only for docstrings.
+
+```python
+name = 'alfaseekers'        # correct
+label = "alfaseekers"       # wrong
+
+def compute() -> int:
+    """Return the computed value."""  # correct: double quotes for docstrings
+    ...
+```
+
+## Exceptions
+
+Always catch specific exception types — never bare `except:` or `except Exception:`. Exception messages must be assigned to a variable before being passed to the exception constructor.
+
+```python
+# correct
+msg = f'unexpected value: {value}'
+raise ValueError(msg)
+
+# wrong
+raise ValueError(f'unexpected value: {value}')
+```
+
+## Boolean Parameters
+
+Do not use positional boolean parameters. Use keyword-only arguments instead.
+
+```python
+# correct
+def fetch(*, include_deleted: bool = False) -> list[Record]: ...
+
+# wrong
+def fetch(include_deleted: bool = False) -> list[Record]: ...
+```
+
+## Imports
+
+Group imports in this order: standard library, third-party, local. Alphabetical within each group. `ruff` enforces this automatically. Avoid wildcard imports (`from x import *`).
+
+## Datetimes
+
+All `datetime` objects must be timezone-aware. Always pass `tz=UTC` or equivalent.
+
+```python
+from datetime import UTC, datetime
+
+now = datetime.now(tz=UTC)  # correct
+now = datetime.now()        # wrong
+```
+
+## Naming
+
+Follow PEP 8 naming enforced by ruff `N` rules: `snake_case` for functions, methods, variables, and modules; `PascalCase` for classes; `ALL_CAPS` for module-level constants.
+
+## Complexity
+
+Keep functions small and focused. Avoid deep nesting. If cyclomatic complexity grows, extract helpers.
+
+## Mutable Defaults
+
+Never use mutable objects as default argument values.
+
+```python
+def append(items: list[int] | None = None) -> list[int]:  # correct
+    if items is None:
+        items = []
+    ...
+
+def append(items: list[int] = []) -> list[int]: ...  # wrong
+```
+
+## Security
+
+Do not use `assert` outside of test files. Do not use `exec` or `eval`. Do not hardcode secrets or credentials.

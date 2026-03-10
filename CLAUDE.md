@@ -47,20 +47,19 @@ A Git repository must exist.
 ### Steps
 
 1. Bootstrap: add `.cuoco/` to `.gitignore`, clone `alfaseekers/artifacts` into `.cuoco/artifacts/`, create project namespace directory.
-2. Interactive Q&A — ask the user about the project:
+2. Seed org-wide artifacts at the artifacts repo root (idempotent — skip if already present): copy `tech-stack.md` → `.cuoco/artifacts/tech-stack.md`; copy `code-style/general.md` and `code-style/python.md` → `.cuoco/artifacts/code-style/`.
+3. Interactive Q&A — ask the user about the project:
    - What does the project do? Who is it for?
    - What are the core features / capabilities?
    - What does success look like? Key constraints?
-3. Generate `.cuoco/artifacts/<project>/product.md` from the answers.
-4. Copy the bundled `tech-stack.md` to `.cuoco/artifacts/<project>/tech-stack.md` — no Q&A.
+4. Generate `.cuoco/artifacts/<project>/product.md` from the answers.
 5. Ask the user whether to use the standard product guidelines or provide their own. If standard: copy the bundled guidelines. If custom: ask the user to provide content or point to a file. If neither: skip.
-6. Copy `general.md` and `python.md` into `.cuoco/artifacts/<project>/code-style/`.
-7. Create an empty feature registry at `.cuoco/artifacts/<project>/feat/index.json`. Features are defined later, one at a time, when running `/cuoco:f-recipe`.
-8. Push all artifacts to `alfaseekers/artifacts`.
+6. Create an empty feature registry at `.cuoco/artifacts/<project>/feat/index.json`. Features are defined later, one at a time, when running `/cuoco:f-recipe`.
+7. Push all artifacts to `alfaseekers/artifacts`.
 
 ### Output
 
-`.cuoco/artifacts/<project>/product.md`, `tech-stack.md`, `feat/index.json` (empty), `code-style/*.md`. Pushed to `alfaseekers/artifacts`.
+`.cuoco/artifacts/tech-stack.md`, `.cuoco/artifacts/code-style/*.md` (org-wide, seeded once). `.cuoco/artifacts/<project>/product.md`, `feat/index.json` (empty). All pushed to `alfaseekers/artifacts`.
 
 ---
 
@@ -68,7 +67,7 @@ A Git repository must exist.
 
 ### Purpose
 
-Define and plan a single feature. Produces `research.md`, `plan.md`, and `references.md`. No source code is created or modified.
+Define and plan a single feature. Produces `research.md` and `plan.md`. No source code is created or modified.
 
 ### Preconditions
 
@@ -79,12 +78,11 @@ Define and plan a single feature. Produces `research.md`, `plan.md`, and `refere
 1. Pull `.cuoco/artifacts/` from `alfaseekers/artifacts`.
 2. Ask the user: "What feature do you want to work on? Give it a name and a one-sentence description." Derive a kebab-case `feature-id` from the name. Optionally ask if this depends on any features already in `index.json`.
 3. Add a new entry to `feat/index.json` with status `"in-recipe"`. Create the feature branch `feat/<feature-id>` from main. Create the directory `.cuoco/artifacts/<project>/feat/<feature-id>/`.
-4. Read `.cuoco/references/`. Write `references.md` listing exactly the repos present (or noting none are available). Do not add repos yourself.
-5. RESEARCH PHASE — read the codebase deeply. Investigate relevant APIs and libraries, including any repos listed in `references.md`. Write findings to `research.md`. The research must be detailed enough that an implementer can write code without consulting external docs.
-6. PLANNING PHASE — create `plan.md` using the RED/GREEN step format (see Plan Format section).
-7. Present the plan to the user. Revise until approved.
-8. Set feature status to `"planned"` in `index.json`.
-9. Push artifacts to `alfaseekers/artifacts`.
+4. RESEARCH PHASE — read the codebase deeply. Investigate relevant APIs and libraries. Read `.cuoco/artifacts/tech-stack.md` and `.cuoco/artifacts/code-style/` for context. If `.cuoco/references/` exists and contains repos, read from them as additional context. Write findings to `research.md`. The research must be detailed enough that an implementer can write code without consulting external docs.
+5. PLANNING PHASE — create `plan.md` using the RED/GREEN step format (see Plan Format section).
+6. Present the plan to the user. Revise until approved.
+7. Set feature status to `"planned"` in `index.json`.
+8. Push artifacts to `alfaseekers/artifacts`.
 
 ### Constraints
 
@@ -92,7 +90,7 @@ CRITICAL: During this entire phase, do NOT create, modify, or delete any source 
 
 ### Output
 
-`research.md`, `plan.md`, `references.md`. Feature status `"planned"` in `index.json`. All pushed to `alfaseekers/artifacts`.
+`research.md`, `plan.md`. Feature status `"planned"` in `index.json`. All pushed to `alfaseekers/artifacts`.
 
 ---
 
@@ -112,7 +110,7 @@ At least one feature in `feat/index.json` must have status `"planned"` with both
 2. Read `feat/index.json`. List features with status `"planned"`. Auto-select if only one; otherwise ask user.
 3. Ask the user which execution mode: step-by-step or all at once.
 4. Check out the feature branch: `git checkout feat/<feature-id>`.
-5. Load context: `research.md`, `plan.md`, `references.md`. If listed repos exist in `.cuoco/references/`, load relevant files as additional context.
+5. Load context: `research.md`, `plan.md`, `.cuoco/artifacts/tech-stack.md`, `.cuoco/artifacts/code-style/`. If `.cuoco/references/` exists, read from relevant repos as needed.
 6. Set feature status to `"in-progress"` in `index.json`.
 7. For each step in `plan.md`, in order:
    a. Mark step [RED] in `plan.md`. Commit.
@@ -132,8 +130,6 @@ Follow the plan. If the plan is wrong or incomplete, STOP and tell the user. Do 
 
 If the user says "push artifacts" or "sync artifacts" at any point, run `git -C .cuoco/artifacts push` immediately.
 
-Do not add unnecessary comments, docstrings, or type annotations. Run type checks and tests continuously.
-
 ### Output
 
 Feature implemented on `feat/<feature-id>` branch with atomic conventional commits. `plan.md` fully marked [DONE]. Feature status `"done"` in `index.json`. Pushed to `alfaseekers/artifacts`.
@@ -147,21 +143,20 @@ Feature implemented on `feat/<feature-id>` branch with atomic conventional commi
 ```
 .cuoco/
 ├── artifacts/                  ← git clone of alfaseekers/artifacts
+│   ├── tech-stack.md          ← org-wide; seeded once during setup
+│   ├── code-style/            ← org-wide; seeded once during setup
+│   │   ├── general.md
+│   │   └── python.md
 │   └── <project-name>/        ← derived from git remote URL
 │       ├── product.md
-│       ├── tech-stack.md
 │       ├── product-guidelines.md (optional)
-│       ├── code-style/
-│       │   ├── general.md
-│       │   └── python.md
 │       └── feat/
 │           ├── index.json     ← starts empty; entries added per f-recipe run
 │           └── <feature-id>/ ← matches branch feat/<feature-id>
 │               ├── research.md
-│               ├── plan.md
-│               └── references.md
-└── references/                 ← gitignored; local repo clones
-    └── <repo-name>/            ← cloned only on explicit user request
+│               └── plan.md
+└── references/                 ← canvas; clone repos here while working
+    └── <repo-name>/
 ```
 
 ## product.md
@@ -170,7 +165,11 @@ The project vision document. Describes what the system does, who it is for, core
 
 ## tech-stack.md
 
-AlfaSeekers standard technology stack. Copied from the bundled template during `/cuoco:setup` — not generated through Q&A. Updated only when the stack itself changes org-wide.
+AlfaSeekers standard technology stack. Lives at the root of `alfaseekers/artifacts` — shared across all projects, seeded once during the first project setup. Read by agents during recipe and cook for toolchain context.
+
+## code-style/
+
+AlfaSeekers code style guides. Lives at the root of `alfaseekers/artifacts` — shared across all projects, seeded once during the first project setup. `general.md` applies universally; `python.md` applies to all AlfaSeekers Python projects.
 
 ## feat/index.json
 
@@ -194,19 +193,13 @@ Research record for a feature. Documents what was found: API response shapes, li
 
 Implementation roadmap for a feature. Opens with a preamble paragraph summarising the feature and step dependency order. Then one section per step using the RED/GREEN format (see Plan Format section).
 
-## feat/<id>/references.md
-
-Lists the repositories present in `.cuoco/references/` at the time the recipe was run. Populated automatically during `/cuoco:f-recipe` — reflects only what is actually in `.cuoco/references/`, nothing more. Format: one repo per line with its local path (`.cuoco/references/<repo-name>/`). Future agents working on the same feature load this file first to discover what references are available.
-
 ---
 
 # References
 
-`.cuoco/references/` contains local clones of repositories for agent inspection. A repository is added here only when the user explicitly asks the agent to inspect it. The agent never decides to clone a repo there itself and never adds a repo to `references.md` that isn't present in `.cuoco/references/`.
+`.cuoco/references/` is a canvas directory. Clone any repo there while working — the agent will read from it during recipe and cook when relevant. No tracking file is generated.
 
-During the recipe phase, the agent reads `.cuoco/references/` and writes `references.md` into the feature directory. During cook, the agent loads `references.md` and uses those repos as additional context during implementation.
-
-To add a reference repo (user-initiated): `git clone <url> .cuoco/references/<name>`
+To add a repo: `git clone <url> .cuoco/references/<name>`
 
 ---
 
@@ -240,9 +233,7 @@ STATUS values: [PENDING] → [RED] → [GREEN] → [DONE]. A step reaches [DONE]
 
 # Code Style
 
-`general.md` and `python.md` are copied into `.cuoco/artifacts/<project>/code-style/` during `/cuoco:setup`. They are not generated — they are bundled with the workflow.
-
-Core principles: readability over cleverness, consistency with existing patterns, simplicity over abstraction, document why not what, minimise coupling and dependencies.
+Style guides live at `.cuoco/artifacts/code-style/`. Read them before writing any code. `general.md` applies universally; `python.md` applies to all AlfaSeekers Python projects.
 
 ---
 

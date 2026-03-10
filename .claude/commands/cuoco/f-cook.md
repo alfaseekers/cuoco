@@ -39,9 +39,9 @@ git checkout feat/<feature-id>
 Load context:
 - Read `$ARTIFACTS/feat/<feature-id>/research.md`
 - Read `$ARTIFACTS/feat/<feature-id>/plan.md`
-- Read `$ARTIFACTS/feat/<feature-id>/references.md`
-- Read `$ARTIFACTS/tech-stack.md`
-- If repos are listed in references.md and exist in `.cuoco/references/`, load relevant files from them as additional context.
+- Read `.cuoco/artifacts/tech-stack.md`
+- Read `.cuoco/artifacts/code-style/`
+- If `.cuoco/references/` exists, read from relevant repos as needed
 
 Set the feature status to `"in-progress"` in `$ARTIFACTS/feat/index.json`.
 
@@ -54,7 +54,7 @@ For each step in plan.md, in order:
 Update the step status from [PENDING] to [RED] in plan.md (both the step header and the RED subsection header).
 
 ```bash
-git add $ARTIFACTS && git commit -m "docs(cuoco): start step N of <feature-id> (RED)"
+git add $ARTIFACTS && git commit -m "docs: start step N of <feature-id> (RED)"
 ```
 
 ### b. Write failing tests (RED phase)
@@ -70,7 +70,7 @@ git add <test-files> && git commit -m "test: add failing tests for <step-title>"
 Update the step status from [RED] to [GREEN] in plan.md (step header and RED subsection → [DONE], GREEN subsection → [GREEN]).
 
 ```bash
-git add $ARTIFACTS && git commit -m "docs(cuoco): step N of <feature-id> RED done"
+git add $ARTIFACTS && git commit -m "docs: step N of <feature-id> RED done"
 ```
 
 ### d. Write minimum implementation (GREEN phase)
@@ -86,7 +86,7 @@ git add <source-files> && git commit -m "<type>: <description>"
 Update the step status to [DONE] in plan.md (step header and all subsection headers).
 
 ```bash
-git add $ARTIFACTS && git commit -m "docs(cuoco): complete step N of <feature-id>"
+git add $ARTIFACTS && git commit -m "docs: complete step N of <feature-id>"
 ```
 
 ### f. Checkpoint (step-by-step mode only)
@@ -100,8 +100,8 @@ When all steps are [DONE]:
 1. Set feature status to `"done"` in `$ARTIFACTS/feat/index.json`.
 
 2. ```bash
-   git -C .cuoco/artifacts add $PROJECT_NAME
-   git -C .cuoco/artifacts commit -m "docs(cuoco): complete <feature-id>"
+   git -C .cuoco/artifacts add .
+   git -C .cuoco/artifacts commit -m "docs: complete <feature-id>"
    git -C .cuoco/artifacts push
    ```
 

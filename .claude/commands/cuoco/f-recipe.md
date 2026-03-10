@@ -1,5 +1,5 @@
 ---
-description: Research and plan a feature — produces research.md, plan.md, and references.md without touching source code.
+description: Research and plan a feature — produces research.md and plan.md without touching source code.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, Agent, WebFetch
 ---
 
@@ -43,19 +43,13 @@ git checkout -b feat/<feature-id> main
 
 Create the directory `$ARTIFACTS/feat/<feature-id>/`.
 
-## 3. References
+## 3. Research Phase
 
-Read `.cuoco/references/`. List all subdirectories present.
-
-Write `$ARTIFACTS/feat/<feature-id>/references.md`:
-- If repos are present: list each repo name and its local path (`.cuoco/references/<name>/`), one per line.
-- If empty or absent: note that no local references are available.
-
-Do not add any repos yourself. Only reflect what is present.
-
-## 4. Research Phase
-
-Read the codebase deeply and thoroughly. Investigate relevant APIs, libraries, tools, and architectural patterns. Study how the feature fits into the existing system. Consult `$ARTIFACTS/product.md` and `$ARTIFACTS/tech-stack.md` for context. Read from `.cuoco/references/<repo>/` where relevant to the feature.
+Read the codebase deeply and thoroughly. Investigate relevant APIs, libraries, tools, and architectural patterns. Consult:
+- `.cuoco/artifacts/tech-stack.md` — toolchain and stack constraints
+- `.cuoco/artifacts/code-style/` — style rules to respect in the plan
+- `$ARTIFACTS/product.md` — project vision and goals
+- `.cuoco/references/<repo>/` — if `.cuoco/references/` exists and contains repos, read from them where relevant
 
 Write findings to `$ARTIFACTS/feat/<feature-id>/research.md`.
 
@@ -67,7 +61,7 @@ The research document must follow this form:
 - Detailed enough that an implementer can write code without consulting external docs
 - Closes with a ## References table (columns: Reference, URL)
 
-## 5. Planning Phase
+## 4. Planning Phase
 
 Using research.md plus project artifacts, create `$ARTIFACTS/feat/<feature-id>/plan.md`.
 
@@ -93,17 +87,17 @@ The plan must follow this form:
 
   Output contract — definition of done as observable behaviour (tests pass, commands succeed).
 
-## 6. User Review
+## 5. User Review
 
 Present the plan to the user. If they reject or request changes, revise and re-present until approved.
 
-## 7. Finalise
+## 6. Finalise
 
 Set the feature status to `"planned"` in `$ARTIFACTS/feat/index.json`.
 
 ```bash
-git -C .cuoco/artifacts add $PROJECT_NAME
-git -C .cuoco/artifacts commit -m "docs(cuoco): add recipe for <feature-id>"
+git -C .cuoco/artifacts add .
+git -C .cuoco/artifacts commit -m "docs: add recipe for <feature-id>"
 git -C .cuoco/artifacts push
 ```
 
