@@ -47,19 +47,18 @@ A Git repository must exist.
 ### Steps
 
 1. Bootstrap: add `.cuoco/` to `.gitignore`, clone `alfaseekers/artifacts` into `.cuoco/artifacts/`, create project namespace directory.
-2. Seed org-wide artifacts at the artifacts repo root (idempotent — skip if already present): copy `tech-stack.md` → `.cuoco/artifacts/tech-stack.md`; copy `code-style/general.md` and `code-style/python.md` → `.cuoco/artifacts/code-style/`.
-3. Interactive Q&A — ask the user about the project:
+2. Interactive Q&A — ask the user about the project:
    - What does the project do? Who is it for?
    - What are the core features / capabilities?
    - What does success look like? Key constraints?
-4. Generate `.cuoco/artifacts/<project>/product.md` from the answers.
-5. Ask the user whether to use the standard product guidelines or provide their own. If standard: copy the bundled guidelines. If custom: ask the user to provide content or point to a file. If neither: skip.
-6. Create an empty feature registry at `.cuoco/artifacts/<project>/feat/index.json`. Features are defined later, one at a time, when running `/cuoco:f-recipe`.
-7. Push all artifacts to `alfaseekers/artifacts`.
+3. Generate `.cuoco/artifacts/<project>/product.md` from the answers.
+4. Ask the user whether to use the standard product guidelines or provide their own. If standard: copy the bundled guidelines. If custom: ask the user to provide content or point to a file. If neither: skip.
+5. Create an empty feature registry at `.cuoco/artifacts/<project>/feat/index.json`. Features are defined later, one at a time, when running `/cuoco:f-recipe`.
+6. Push all artifacts to `alfaseekers/artifacts`.
 
 ### Output
 
-`.cuoco/artifacts/tech-stack.md`, `.cuoco/artifacts/code-style/*.md` (org-wide, seeded once). `.cuoco/artifacts/<project>/product.md`, `feat/index.json` (empty). All pushed to `alfaseekers/artifacts`.
+`.cuoco/artifacts/<project>/product.md`, `feat/index.json` (empty). All pushed to `alfaseekers/artifacts`.
 
 ---
 

@@ -45,14 +45,6 @@ for cmd in setup.md f-recipe.md f-cook.md; do
   echo "  COPY  .claude/commands/cuoco/$cmd"
 done
 
-# 3. Code style guides
-mkdir -p "$TARGET_DIR/code-style"
-for guide in "$CUOCO_DIR/code-style/"*.md; do
-  name="$(basename "$guide")"
-  cp "$guide" "$TARGET_DIR/code-style/$name"
-  echo "  COPY  code-style/$name"
-done
-
 
 echo ""
 echo "Done! Run /cuoco:setup in Claude Code to initialise your project."
