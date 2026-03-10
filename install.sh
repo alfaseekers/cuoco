@@ -53,9 +53,6 @@ for guide in "$CUOCO_DIR/code-style/"*.md; do
   echo "  COPY  code-style/$name"
 done
 
-# 4. Tech stack template
-cp "$CUOCO_DIR/tech-stack.md" "$TARGET_DIR/tech-stack.md"
-echo "  COPY  tech-stack.md"
 
 echo ""
 echo "Done! Run /cuoco:setup in Claude Code to initialise your project."
