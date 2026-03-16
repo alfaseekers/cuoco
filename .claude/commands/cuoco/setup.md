@@ -25,31 +25,31 @@ else
 fi
 
 # Create project namespace
-mkdir -p .cuoco/artifacts/$PROJECT_NAME/feat
+mkdir -p .cuoco/artifacts/repositories/$PROJECT_NAME/feat
 ```
 
 After cloning, `.cuoco/artifacts/tech-stack.md` and `.cuoco/artifacts/code-style/` are already present — these are org-wide files maintained directly in `alfaseekers/artifacts`. Do not modify them.
 
-## 1. Product Vision (.cuoco/artifacts/$PROJECT_NAME/product.md)
+## 1. Product Vision (.cuoco/artifacts/repositories/$PROJECT_NAME/product.md)
 
 Ask the user 3–4 batched questions using AskUserQuestion:
 - What does the project do and who is it for?
 - What are the core features / capabilities?
 - What does success look like? Any key constraints?
 
-Generate `.cuoco/artifacts/$PROJECT_NAME/product.md` from the answers. Show it to the user; revise if needed.
+Generate `.cuoco/artifacts/repositories/$PROJECT_NAME/product.md` from the answers. Show it to the user; revise if needed.
 
 ## 2. Product Guidelines (optional)
 
 Ask the user with AskUserQuestion: use the standard product guidelines, provide your own, or skip.
 
-If standard: copy bundled guidelines into `.cuoco/artifacts/$PROJECT_NAME/product-guidelines.md`.
+If standard: copy bundled guidelines into `.cuoco/artifacts/repositories/$PROJECT_NAME/product-guidelines.md`.
 If custom: ask the user to provide the content or point to a file; ingest and save.
 If skip: move on.
 
 ## 3. Feature Registry
 
-Create an empty feature registry at `.cuoco/artifacts/$PROJECT_NAME/feat/index.json`:
+Create an empty feature registry at `.cuoco/artifacts/repositories/$PROJECT_NAME/feat/index.json`:
 
 ```json
 {"features": []}

@@ -12,7 +12,7 @@ CRITICAL CONSTRAINT: During this entire phase, do NOT create, modify, or delete 
 ```bash
 git -C .cuoco/artifacts pull
 PROJECT_NAME=$(git remote get-url origin | sed 's|.*/||; s|\.git$||')
-ARTIFACTS=".cuoco/artifacts/$PROJECT_NAME"
+ARTIFACTS=".cuoco/artifacts/repositories/$PROJECT_NAME"
 ```
 
 ## 1. Define the Feature

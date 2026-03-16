@@ -20,13 +20,13 @@ AlfaSeekers uses a three-phase context-driven development workflow: setup, recip
 
 Commits follow Conventional Commits (https://www.conventionalcommits.org/en/v1.0.0/). Format: `type: subject` — scope is omitted. Allowed types: feat, fix, docs, style, test, chore. Each commit is atomic — one logical change. Do not append Co-Authored-By lines to commit messages. Do not use `--no-verify` — pre-commit hooks (ruff, ty, commit-msg validation) run on every commit and must pass.
 
-Feature branches: `feat/<feature-id>` where feature-id matches the id field in `.cuoco/artifacts/<project>/feat/index.json`. Branches are created from main and merged back via PR. No commits to main directly.
+Feature branches: `feat/<feature-id>` where feature-id matches the id field in `.cuoco/artifacts/repositories/<project>/feat/index.json`. Branches are created from main and merged back via PR. No commits to main directly.
 
 ## Artifacts Sync
 
 `.cuoco/artifacts/` is a git clone of `alfaseekers/artifacts` (github.com/alfaseekers/artifacts). Pull at the start of each phase. Push at the end of each phase. If the user asks to push artifacts at any point mid-session (e.g. "push artifacts", "sync artifacts"), run `git -C .cuoco/artifacts push` immediately.
 
-Project namespace within the artifacts repo is derived from the git remote URL: the repo name extracted from `git remote get-url origin`.
+Project namespace within the artifacts repo is derived from the git remote URL: the repo name extracted from `git remote get-url origin`. Project artifacts live under `repositories/<project-name>/` in the artifacts repo.
 
 ---
 
@@ -46,19 +46,19 @@ A Git repository must exist.
 
 ### Steps
 
-1. Bootstrap: add `.cuoco/` to `.gitignore`, clone `alfaseekers/artifacts` into `.cuoco/artifacts/`, create project namespace directory.
+1. Bootstrap: add `.cuoco/` to `.gitignore`, clone `alfaseekers/artifacts` into `.cuoco/artifacts/`, create project namespace directory under `repositories/`.
 2. Interactive Q&A — ask the user about the project:
    - What does the project do? Who is it for?
    - What are the core features / capabilities?
    - What does success look like? Key constraints?
-3. Generate `.cuoco/artifacts/<project>/product.md` from the answers.
+3. Generate `.cuoco/artifacts/repositories/<project>/product.md` from the answers.
 4. Ask the user whether to use the standard product guidelines or provide their own. If standard: copy the bundled guidelines. If custom: ask the user to provide content or point to a file. If neither: skip.
-5. Create an empty feature registry at `.cuoco/artifacts/<project>/feat/index.json`. Features are defined later, one at a time, when running `/cuoco:f-recipe`.
+5. Create an empty feature registry at `.cuoco/artifacts/repositories/<project>/feat/index.json`. Features are defined later, one at a time, when running `/cuoco:f-recipe`.
 6. Push all artifacts to `alfaseekers/artifacts`.
 
 ### Output
 
-`.cuoco/artifacts/<project>/product.md`, `feat/index.json` (empty). All pushed to `alfaseekers/artifacts`.
+`.cuoco/artifacts/repositories/<project>/product.md`, `feat/index.json` (empty). All pushed to `alfaseekers/artifacts`.
 
 ---
 
@@ -76,7 +76,7 @@ Define and plan a single feature. Produces `research.md` and `plan.md`. No sourc
 
 1. Pull `.cuoco/artifacts/` from `alfaseekers/artifacts`.
 2. Ask the user: "What feature do you want to work on? Give it a name and a one-sentence description." Derive a kebab-case `feature-id` from the name. Optionally ask if this depends on any features already in `index.json`.
-3. Add a new entry to `feat/index.json` with status `"in-recipe"`. Create the feature branch `feat/<feature-id>` from main. Create the directory `.cuoco/artifacts/<project>/feat/<feature-id>/`.
+3. Add a new entry to `feat/index.json` with status `"in-recipe"`. Create the feature branch `feat/<feature-id>` from main. Create the directory `.cuoco/artifacts/repositories/<project>/feat/<feature-id>/`.
 4. RESEARCH PHASE — read the codebase deeply. Investigate relevant APIs and libraries. Read `.cuoco/artifacts/tech-stack.md` and `.cuoco/artifacts/code-style/` for context. If `.cuoco/references/` exists and contains repos, read from them as additional context. Write findings to `research.md`. The research must be detailed enough that an implementer can write code without consulting external docs.
 5. PLANNING PHASE — create `plan.md` using the RED/GREEN step format (see Plan Format section).
 6. Present the plan to the user. Revise until approved.
@@ -144,16 +144,17 @@ Feature implemented on `feat/<feature-id>` branch with atomic conventional commi
 ├── artifacts/                  ← git clone of alfaseekers/artifacts
 │   ├── tech-stack.md          ← org-wide; seeded once during setup
 │   ├── code-style/            ← org-wide; seeded once during setup
-│   │   ├── general.md
+│   │   ├── general-principles.md
 │   │   └── python.md
-│   └── <project-name>/        ← derived from git remote URL
-│       ├── product.md
-│       ├── product-guidelines.md (optional)
-│       └── feat/
-│           ├── index.json     ← starts empty; entries added per f-recipe run
-│           └── <feature-id>/ ← matches branch feat/<feature-id>
-│               ├── research.md
-│               └── plan.md
+│   └── repositories/
+│       └── <project-name>/    ← derived from git remote URL
+│           ├── product.md
+│           ├── product-guidelines.md (optional)
+│           └── feat/
+│               ├── index.json ← starts empty; entries added per f-recipe run
+│               └── <feature-id>/ ← matches branch feat/<feature-id>
+│                   ├── research.md
+│                   └── plan.md
 └── references/                 ← canvas; clone repos here while working
     └── <repo-name>/
 ```
@@ -168,7 +169,7 @@ AlfaSeekers standard technology stack. Lives at the root of `alfaseekers/artifac
 
 ## code-style/
 
-AlfaSeekers code style guides. Lives at the root of `alfaseekers/artifacts` — shared across all projects, seeded once during the first project setup. `general.md` applies universally; `python.md` applies to all AlfaSeekers Python projects.
+AlfaSeekers code style guides. Lives at the root of `alfaseekers/artifacts` — shared across all projects, seeded once during the first project setup. `general-principles.md` applies universally; `python.md` applies to all AlfaSeekers Python projects.
 
 ## feat/index.json
 
@@ -232,7 +233,7 @@ STATUS values: [PENDING] → [RED] → [GREEN] → [DONE]. A step reaches [DONE]
 
 # Code Style
 
-Style guides live at `.cuoco/artifacts/code-style/`. Read them before writing any code. `general.md` applies universally; `python.md` applies to all AlfaSeekers Python projects.
+Style guides live at `.cuoco/artifacts/code-style/`. Read them before writing any code. `general-principles.md` applies universally; `python.md` applies to all AlfaSeekers Python projects.
 
 ---
 

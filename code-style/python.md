@@ -1,4 +1,4 @@
-# Python Code Style
+# Python
 
 This guide reflects the constraints enforced by the AlfaSeekers toolchain (ruff + ty). All rules below are automatically checked on every commit — violations block the commit.
 

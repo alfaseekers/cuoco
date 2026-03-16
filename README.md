@@ -41,15 +41,16 @@ All artifacts sync to `alfaseekers/artifacts`. Org-wide files live at the repo r
 ├── artifacts/                  ← clone of alfaseekers/artifacts
 │   ├── tech-stack.md          ← org-wide; seeded once
 │   ├── code-style/            ← org-wide; seeded once
-│   │   ├── general.md
+│   │   ├── general-principles.md
 │   │   └── python.md
-│   └── <project-name>/
-│       ├── product.md
-│       └── feat/
-│           ├── index.json     ← grows with each f-recipe run
-│           └── <feature-id>/
-│               ├── research.md
-│               └── plan.md
+│   └── repositories/
+│       └── <project-name>/
+│           ├── product.md
+│           └── feat/
+│               ├── index.json ← grows with each f-recipe run
+│               └── <feature-id>/
+│                   ├── research.md
+│                   └── plan.md
 └── references/                 ← canvas; clone repos here while working
     └── <repo-name>/
 ```
