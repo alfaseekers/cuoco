@@ -45,6 +45,13 @@ for cmd in setup.md f-recipe.md f-cook.md; do
   echo "  COPY  .claude/commands/cuoco/$cmd"
 done
 
-
+if [ -z "$(grep 'CLAUDE.md' .gitignore)" ] && [ -z "$(grep '.claude' .gitignore)" ]; then
+  echo "# claude files from cuoco" >> .gitignore
+  echo "CLAUDE.md" >> .gitignore
+  echo ".claude" >> .gitignore
+  echo "Claude files were not gitignored, appended to .gitignore"
+else 
+  echo "WARNING: Some claude files are already gitignored. Make sure '.claude' and 'CLAUDE.md' are gitignored" 
+fi
 echo ""
 echo "Done! Run /cuoco:setup in Claude Code to initialise your project."
