@@ -38,7 +38,7 @@ Three commands: `/cuoco:setup` (one-time project init), `/cuoco:f-recipe` (resea
 
 ### Purpose
 
-One-time project initialisation. Creates the `.cuoco/` directory, links to the alfaseekers/artifacts repo, and generates foundational project documents.
+One-time project initialisation. Creates the `.cuoco/` directory, links to the alfaseekers/artifacts repo, and generates or copies foundational project documents.
 
 ### Preconditions
 
@@ -161,7 +161,7 @@ Feature implemented on `feat/<feature-id>` branch with atomic conventional commi
 
 ## product.md
 
-The project vision document. Describes what the system does, who it is for, core features, success criteria, and key design principles. Generated during `/cuoco:setup` via interactive Q&A. Updated when the product vision changes, not when implementation details change.
+The project vision document. Describes what the system does, who it is for, core features, success criteria, and key design principles. Generated or copied during `/cuoco:setup` via interactive Q&A. Updated when the product vision changes, not when implementation details change.
 
 ## tech-stack.md
 

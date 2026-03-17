@@ -1,5 +1,5 @@
 ---
-description: One-time project initialisation — generates product.md and sets up the .cuoco/ directory linked to alfaseekers/artifacts.
+description: One-time project initialisation — generates product.md or receives it from user, and sets up the .cuoco/ directory linked to alfaseekers/artifacts.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 
@@ -32,12 +32,17 @@ After cloning, `.cuoco/artifacts/tech-stack.md` and `.cuoco/artifacts/code-style
 
 ## 1. Product Vision (.cuoco/artifacts/repositories/$PROJECT_NAME/product.md)
 
-Ask the user 3–4 batched questions using AskUserQuestion:
-- What does the project do and who is it for?
-- What are the core features / capabilities?
-- What does success look like? Any key constraints?
-
-Generate `.cuoco/artifacts/repositories/$PROJECT_NAME/product.md` from the answers. Show it to the user; revise if needed.
+Ask the user using AskUserQuestion whether the product.md shall be provided manually, or generated. 
+- If the user wants to provide it manually:
+  - Use AskUserQuestion to find out the file's location
+  - The two options should be "Project Root" or user-defined (type something). 
+  - Copy the file to`.cuoco/artifacts/repositories/$PROJECT_NAME/product.md`.
+  - Move on to step 2
+- Else, Ask the user 3–4 batched questions using AskUserQuestion:
+  - What does the project do and who is it for?
+  - What are the core features / capabilities?
+  - What does success look like? Any key constraints?
+  - Generate `.cuoco/artifacts/repositories/$PROJECT_NAME/product.md` from the answers. Show it to the user; revise if needed.
 
 ## 2. Product Guidelines (optional)
 

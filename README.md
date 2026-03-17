@@ -27,7 +27,7 @@ Use `--force` to overwrite an existing `CLAUDE.md`:
 ## Commands
 
 ```
-/cuoco:setup      # One-time: generate product.md, link to alfaseekers/artifacts
+/cuoco:setup      # One-time: generate or copy product.md, link to alfaseekers/artifacts
 /cuoco:f-recipe   # Define and plan a feature (no code touched)
 /cuoco:f-cook     # Implement the approved plan with red/green TDD
 ```
